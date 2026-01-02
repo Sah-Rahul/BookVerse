@@ -11,6 +11,7 @@ import {
   Users,
   Menu,
   X,
+  MessageSquare,
 } from "lucide-react";
 
 export default function AdminLayout({
@@ -41,6 +42,11 @@ export default function AdminLayout({
       label: "Users",
       link: "/admin/users",
       icon: Users,
+    },
+     {
+      label: "Chat",
+      link: "/admin/chats",
+      icon: MessageSquare,
     },
   ];
 

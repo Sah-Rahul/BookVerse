@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -27,6 +28,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+export const BOOK_CATEGORIES = [
+  "Philosophy",
+  "Technology",
+  "History",
+  "Science",
+  "Biography",
+  "Business",
+  "Self-Help",
+  "Fiction",
+];
+
 const booksData = [
   {
     id: 1,
@@ -34,6 +46,7 @@ const booksData = [
     author: "James Clear",
     price: 20,
     image: "/book.png",
+    category: "Self-Help",
   },
   {
     id: 2,
@@ -41,6 +54,7 @@ const booksData = [
     author: "Cal Newport",
     price: 18,
     image: "/book.png",
+    category: "Business",
   },
 ];
 
@@ -50,6 +64,36 @@ const Books = () => {
   const [search, setSearch] = useState("");
   const [author, setAuthor] = useState("all");
   const [page, setPage] = useState(1);
+
+  const [formData, setFormData] = useState<{
+    title: string;
+    bookAuthor: string;
+    price: string;
+    file: File | null;
+    category: string;
+  }>({
+    title: "",
+    bookAuthor: "",
+    price: "",
+    file: null,
+    category: "",
+  });
+
+  const handleInputChange = (field: string, value: any) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSaveBook = () => {
+    console.log(formData);
+
+    setFormData({
+      title: "",
+      bookAuthor: "",
+      price: "",
+      file: null,
+      category: "",
+    });
+  };
 
   const filteredBooks = booksData.filter((book) => {
     const matchSearch = book.title.toLowerCase().includes(search.toLowerCase());
@@ -76,14 +120,55 @@ const Books = () => {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Add New Book</DialogTitle>
+              <DialogDescription>
+                Fill out the form to add a new book with title, author, price,
+                file upload, and category.
+              </DialogDescription>
             </DialogHeader>
 
             <div className="space-y-4">
-              <Input placeholder="Book Title" />
-              <Input placeholder="Author" />
-              <Input placeholder="Price" />
-              <Input type="file" />
-              <Button className="w-full">Save Book</Button>
+              <Input
+                placeholder="Book Title"
+                value={formData.title}
+                onChange={(e) => handleInputChange("title", e.target.value)}
+              />
+              <Input
+                placeholder="Author"
+                value={formData.bookAuthor}
+                onChange={(e) =>
+                  handleInputChange("bookAuthor", e.target.value)
+                }
+              />
+              <Input
+                placeholder="Price"
+                type="number"
+                value={formData.price}
+                onChange={(e) => handleInputChange("price", e.target.value)}
+              />
+              <Input
+                type="file"
+                onChange={(e) =>
+                  handleInputChange("file", e.target.files?.[0] || null)
+                }
+              />
+              <Select
+                value={formData.category}
+                onValueChange={(value) => handleInputChange("category", value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {BOOK_CATEGORIES.map((cat) => (
+                    <SelectItem key={cat} value={cat}>
+                      {cat}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Button className="w-full" onClick={handleSaveBook}>
+                Save Book
+              </Button>
             </div>
           </DialogContent>
         </Dialog>
@@ -116,6 +201,7 @@ const Books = () => {
               <TableHead>Title</TableHead>
               <TableHead>Author</TableHead>
               <TableHead>Price</TableHead>
+              <TableHead>Category</TableHead>
               <TableHead>Action</TableHead>
             </TableRow>
           </TableHeader>
@@ -133,6 +219,7 @@ const Books = () => {
                 <TableCell className="font-medium">{book.title}</TableCell>
                 <TableCell>{book.author}</TableCell>
                 <TableCell>${book.price}</TableCell>
+                <TableCell>{book.category}</TableCell>
                 <TableCell>
                   <Button size="sm" variant="outline">
                     Edit
