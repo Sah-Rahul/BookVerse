@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { ShoppingCart, Menu, X, User, BookOpen } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation"; // active link highlight
+import { usePathname } from "next/navigation";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -21,20 +21,22 @@ const Navbar = () => {
     <nav className="bg-linear-to-r from-indigo-900 via-purple-900 to-indigo-900 shadow-2xl sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          {/* Logo */}
-          <div className="flex items-center space-x-3">
-            <div className="bg-linear-to-br from-yellow-400 to-orange-500 p-2 rounded-xl shadow-lg">
-              <BookOpen className="w-8 h-8 text-white" />
+          <Link href={"/"}>
+            <div className="flex items-center space-x-3">
+              <div className="bg-linear-to-br from-yellow-400 to-orange-500 p-2 rounded-xl shadow-lg">
+                <BookOpen className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <span className="text-3xl font-extrabold text-white tracking-tight">
+                  BookVerse
+                </span>
+                <p className="text-xs text-purple-200">
+                  Your Literary Universe
+                </p>
+              </div>
             </div>
-            <div>
-              <span className="text-3xl font-extrabold text-white tracking-tight">
-                BookVerse
-              </span>
-              <p className="text-xs text-purple-200">Your Literary Universe</p>
-            </div>
-          </div>
+          </Link>
 
-          {/* Desktop Menu */}
           <div className="hidden lg:flex items-center space-x-8">
             {menuItems.map((item) => (
               <Link
@@ -49,7 +51,6 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Desktop Actions */}
           <div className="hidden lg:flex items-center space-x-4">
             <button className="p-3 hover:bg-white/10 rounded-xl transition relative">
               <ShoppingCart className="w-6 h-6 text-white" />
@@ -65,16 +66,18 @@ const Navbar = () => {
             </button>
           </div>
 
-          {/* Mobile Menu Button */}
           <button
             className="lg:hidden p-2 text-white"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            {isMenuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
+            {isMenuOpen ? (
+              <X className="w-7 h-7" />
+            ) : (
+              <Menu className="w-7 h-7" />
+            )}
           </button>
         </div>
 
-        {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="lg:hidden pb-6 space-y-3">
             {menuItems.map((item) => (

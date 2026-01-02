@@ -1,14 +1,15 @@
 "use client";
- 
+
 import {
   ShoppingCart,
-  Search, 
-  Star, 
+  Search,
+  Star,
   Truck,
   Shield,
   HeadphonesIcon,
 } from "lucide-react";
- 
+import Link from "next/link";
+
 const Home = () => {
   const featuredBooks = [
     {
@@ -148,7 +149,6 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-50 via-blue-50 to-purple-50">
-      {/* Hero Section */}
       <div className="relative bg-linear-to-r from-indigo-600 via-purple-600 to-pink-600 overflow-hidden">
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzBoLTEydjEyaDEyVjMwem0wLTEyaC0xMlYzNmgxMlYxOHoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-20"></div>
@@ -213,7 +213,6 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Features */}
       <div className="bg-white border-y border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -234,7 +233,6 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Categories */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center mb-12">
           <h2 className="text-4xl lg:text-5xl font-extrabold text-gray-800 mb-4">
@@ -270,8 +268,6 @@ const Home = () => {
           ))}
         </div>
       </div>
-
-      {/* Featured Books */}
       <div className="bg-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center mb-12">
@@ -286,9 +282,11 @@ const Home = () => {
                 Handpicked by our expert curators
               </p>
             </div>
-            <button className="mt-6 md:mt-0 bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition transform hover:scale-105">
-              View All Books →
-            </button>
+            <Link href={"/all-books"}>
+              <button className="mt-6 md:mt-0 bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition transform hover:scale-105">
+                View All Books →
+              </button>
+            </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {featuredBooks.map((book) => (
@@ -355,10 +353,10 @@ const Home = () => {
                   <div className="flex items-center justify-between mb-4">
                     <div>
                       <span className="text-3xl font-bold text-indigo-600">
-                        ₹{book.price}
+                        Rs{book.price}
                       </span>
                       <span className="text-lg text-gray-400 line-through ml-2">
-                        ₹{book.originalPrice}
+                        Rs{book.originalPrice}
                       </span>
                     </div>
                     <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-bold">
@@ -377,7 +375,6 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Newsletter */}
       <div className="bg-linear-to-r from-indigo-600 via-purple-600 to-pink-600 py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl lg:text-5xl font-extrabold text-white mb-6">
