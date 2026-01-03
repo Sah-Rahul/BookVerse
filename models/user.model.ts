@@ -5,7 +5,6 @@ export interface IUser extends Document {
   email: string
   password: string
   role: "user" | "admin"
-  isBlocked: boolean
   createdAt: Date
 }
 
@@ -34,11 +33,6 @@ const userSchema = new Schema<IUser>(
       type: String,
       enum: ["user", "admin"],
       default: "user",
-    },
-
-    isBlocked: {
-      type: Boolean,
-      default: false,
     },
   },
   { timestamps: true }
