@@ -204,34 +204,9 @@ const Collections = () => {
                   className="w-full"
                 />
                 <div className="flex justify-between text-sm text-gray-600">
-                  <span>₹{priceRange[0]}</span>
-                  <span>₹{priceRange[1]}</span>
+                  <span>Rs{priceRange[0]}</span>
+                  <span>Rs{priceRange[1]}</span>
                 </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <h3 className="text-lg font-bold text-gray-800 mb-4">Rating</h3>
-              <div className="space-y-2">
-                {[5, 4, 3, 2, 1].map((rating) => (
-                  <button
-                    key={rating}
-                    className="w-full flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-gray-100 transition"
-                  >
-                    <div className="flex">
-                      {[...Array(rating)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className="w-4 h-4 text-yellow-400 fill-yellow-400"
-                        />
-                      ))}
-                      {[...Array(5 - rating)].map((_, i) => (
-                        <Star key={i} className="w-4 h-4 text-gray-300" />
-                      ))}
-                    </div>
-                    <span className="text-sm text-gray-600">& Up</span>
-                  </button>
-                ))}
               </div>
             </div>
           </aside>
@@ -308,33 +283,14 @@ const Collections = () => {
                         {book.title}
                       </h3>
                       <p className="text-gray-600 mb-3">{book.author}</p>
-                      <div className="flex items-center space-x-2 mb-3">
-                        <div className="flex">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className={`w-4 h-4 ${
-                                i < Math.floor(book.rating)
-                                  ? "text-yellow-400 fill-yellow-400"
-                                  : "text-gray-300"
-                              }`}
-                            />
-                          ))}
-                        </div>
-                        <span className="text-sm font-semibold text-gray-700">
-                          {book.rating}
-                        </span>
-                        <span className="text-sm text-gray-500">
-                          ({book.reviews})
-                        </span>
-                      </div>
+                      <div className="flex items-center space-x-2 mb-3"></div>
                       <div className="flex items-center justify-between mb-4">
                         <div>
                           <span className="text-2xl font-bold text-indigo-600">
-                            ₹{book.price}
+                            Rs{book.price}
                           </span>
                           <span className="text-sm text-gray-400 line-through ml-2">
-                            ₹{book.originalPrice}
+                            Rs{book.originalPrice}
                           </span>
                         </div>
                       </div>
@@ -370,32 +326,13 @@ const Collections = () => {
                           <Heart className="w-6 h-6 text-red-500" />
                         </button>
                       </div>
-                      <div className="flex items-center space-x-2 mb-4">
-                        <div className="flex">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className={`w-5 h-5 ${
-                                i < Math.floor(book.rating)
-                                  ? "text-yellow-400 fill-yellow-400"
-                                  : "text-gray-300"
-                              }`}
-                            />
-                          ))}
-                        </div>
-                        <span className="text-lg font-semibold text-gray-700">
-                          {book.rating}
-                        </span>
-                        <span className="text-gray-500">
-                          ({book.reviews} reviews)
-                        </span>
-                      </div>
+                      <div className="flex items-center space-x-2 mb-4"></div>
                       <div className="flex items-center space-x-4 mb-6">
                         <span className="text-3xl font-bold text-indigo-600">
-                          ₹{book.price}
+                          Rs{book.price}
                         </span>
                         <span className="text-xl text-gray-400 line-through">
-                          ₹{book.originalPrice}
+                          Rs{book.originalPrice}
                         </span>
                         <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-bold">
                           {Math.round(

@@ -11,8 +11,7 @@ const Navbar = () => {
 
   const menuItems = [
     { label: "Home", link: "/" },
-    { label: "Collections", link: "/collections" }, 
-    { label: "New Arrivals", link: "/new-arrivals" },
+    { label: "Collections", link: "/collections" },
     { label: "Contact", link: "/contact" },
   ];
 
