@@ -13,7 +13,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import Category from "./Category";
 
-interface Book {
+export interface IBook {
   _id: string;
   title: string;
   authorName: string;
@@ -26,7 +26,7 @@ interface Book {
 }
 
 const Home = () => {
-  const [allBooks, setAllBooks] = useState<Book[]>([]);
+  const [allBooks, setAllBooks] = useState<IBook[]>([]);
   const [loading, setLoading] = useState(true);
 
   const features = [
