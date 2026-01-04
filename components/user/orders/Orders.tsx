@@ -26,9 +26,7 @@ import {
   Clock,
   CheckCircle,
   XCircle,
-  Eye,
-  TrendingUp,
-  DollarSign,
+  Eye, 
 } from "lucide-react";
 
 interface Order {
@@ -129,7 +127,6 @@ const Orders = () => {
         <p className="text-gray-500 mt-1">Track and manage your orders</p>
       </div>
 
-      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -170,9 +167,8 @@ const Orders = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">
-              Total Spent
+              Cancelled
             </CardTitle>
-            <DollarSign className="w-4 h-4 text-blue-600" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">Rs{stats.totalSpent}</div>
@@ -180,7 +176,6 @@ const Orders = () => {
         </Card>
       </div>
 
-      {/* Orders Table */}
       {orders.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-16">

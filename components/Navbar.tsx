@@ -85,7 +85,7 @@ const Navbar = () => {
                 className={`block text-white hover:text-yellow-400 transition font-medium text-lg ${
                   pathname === item.link ? "text-yellow-400" : ""
                 }`}
-                onClick={() => setIsMenuOpen(false)} // close menu on click
+                onClick={() => setIsMenuOpen(false)}  
               >
                 {item.label}
               </Link>

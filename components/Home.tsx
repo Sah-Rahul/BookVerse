@@ -29,16 +29,6 @@ const Home = () => {
   const [allBooks, setAllBooks] = useState<IBook[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const features = [
-    { icon: Truck, title: "Free Shipping", desc: "On orders above ₹499" },
-    { icon: Shield, title: "Secure Payment", desc: "100% secure transactions" },
-    {
-      icon: HeadphonesIcon,
-      title: "24/7 Support",
-      desc: "Dedicated customer service",
-    },
-  ];
-
   const fetchBooks = async () => {
     try {
       setLoading(true);
@@ -178,33 +168,19 @@ const Home = () => {
                     className="group bg-linear-to-br from-white to-gray-50 rounded-3xl shadow-lg hover:shadow-2xl transition overflow-hidden transform hover:-translate-y-2 duration-300 border border-gray-100"
                   >
                     <div className="relative overflow-hidden">
-                      <img
-                        src={book.image}
-                        alt={book.title}
-                        className="w-full h-80 object-cover group-hover:scale-110 transition duration-500"
-                      />
+                      <Link href={`/book/details/${book._id}`}>
+                        <img
+                          src={book.image}
+                          alt={book.title}
+                          className="w-full h-80 object-cover group-hover:scale-110 transition duration-500"
+                        />
+                      </Link>
                       <div className="absolute top-4 left-4">
                         <span className="bg-linear-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg">
                           {book.category}
                         </span>
                       </div>
-                      <div className="absolute top-4 right-4">
-                        <button className="bg-white/90 backdrop-blur-sm p-3 rounded-full hover:bg-white transition shadow-lg">
-                          <svg
-                            className="w-6 h-6 text-red-500"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                            />
-                          </svg>
-                        </button>
-                      </div>
+                      <div className="absolute top-4 right-4"></div>
                       {book.stock < 10 && book.stock > 0 && (
                         <div className="absolute bottom-4 left-4">
                           <span className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold">

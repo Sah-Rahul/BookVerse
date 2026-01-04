@@ -19,7 +19,7 @@ interface Book {
 }
 
 const BookDetails = () => {
-  const { id } = useParams(); // 👈 dynamic id
+  const { id } = useParams();  
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
 

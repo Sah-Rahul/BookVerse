@@ -1,11 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  Search,
+import { 
   Filter,
-  ShoppingCart,
-  Heart,
+  ShoppingCart, 
   Grid3x3,
   List,
 } from "lucide-react";

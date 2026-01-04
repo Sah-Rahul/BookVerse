@@ -1,6 +1,11 @@
 "use client";
 
+import Loading from "@/components/Loading";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { BOOK_API_END_POINT } from "@/constant/books";
+import { USER_API_END_POINT } from "@/constant/user";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 import {
   BarChart,
@@ -12,6 +17,7 @@ import {
   LineChart,
   Line,
 } from "recharts";
+import { toast } from "sonner";
 
 const salesData = [
   { name: "Jan", revenue: 1200 },
@@ -30,6 +36,38 @@ const orderData = [
 ];
 
 const AdminDashboard = () => {
+  const [bookCount, setBookCount] = useState<number>(0);
+  const [userCount, setUserCount] = useState<number>(0);
+
+  const fetchBooks = async () => {
+    try {
+      const { data } = await axios.get(BOOK_API_END_POINT);
+      setBookCount(data.data.length);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to fetch books");
+    }
+  };
+
+  const fetchUsers = async () => {
+    try {
+      const { data } = await axios.get(USER_API_END_POINT);
+      setUserCount(data.data.length);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to fetch users");
+    }
+  };
+
+  useEffect(() => {
+    fetchBooks();
+    fetchUsers();
+  }, []);
+
+  if(!bookCount || !userCount){
+    return <Loading />
+  }
+
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold">Dashboard</h1>
@@ -39,7 +77,7 @@ const AdminDashboard = () => {
           <CardHeader>
             <CardTitle>Total Books</CardTitle>
           </CardHeader>
-          <CardContent className="text-3xl font-bold">120</CardContent>
+          <CardContent className="text-3xl font-bold">{bookCount}</CardContent>
         </Card>
 
         <Card>
@@ -53,14 +91,14 @@ const AdminDashboard = () => {
           <CardHeader>
             <CardTitle>Total Users</CardTitle>
           </CardHeader>
-          <CardContent className="text-3xl font-bold">340</CardContent>
+          <CardContent className="text-3xl font-bold">{userCount}</CardContent>
         </Card>
 
         <Card>
           <CardHeader>
             <CardTitle>Revenue</CardTitle>
           </CardHeader>
-          <CardContent className="text-3xl font-bold">$4,500</CardContent>
+          <CardContent className="text-3xl font-bold">Rs4,500</CardContent>
         </Card>
       </div>
 
@@ -75,7 +113,7 @@ const AdminDashboard = () => {
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
-                <Bar dataKey="revenue" fill="#6366f1" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="revenue" fill="#6366f1" />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>

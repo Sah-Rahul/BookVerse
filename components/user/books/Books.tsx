@@ -37,7 +37,7 @@ const Books = () => {
   const fetchUserBooks = async () => {
     try {
       setLoading(true);
-      // Replace with your actual API endpoint
+
       const { data } = await axios.get("/api/user/books");
       setBooks(data.data || []);
 
@@ -89,7 +89,6 @@ const Books = () => {
         <p className="text-gray-500 mt-1">Books you've purchased</p>
       </div>
 
-      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -133,7 +132,6 @@ const Books = () => {
         </Card>
       </div>
 
-      {/* Books Grid */}
       {books.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-16">
@@ -149,7 +147,10 @@ const Books = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {books.map((book) => (
-            <Card key={book._id} className="overflow-hidden hover:shadow-lg transition">
+            <Card
+              key={book._id}
+              className="overflow-hidden hover:shadow-lg transition"
+            >
               <div className="relative">
                 <img
                   src={book.image}
