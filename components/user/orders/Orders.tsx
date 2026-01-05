@@ -26,18 +26,31 @@ import {
   Clock,
   CheckCircle,
   XCircle,
-  Eye, 
+  Eye,
+  TrendingUp,
 } from "lucide-react";
+import { ORDER_API_END_POINT } from "@/constant/api";
+
+interface BookDetails {
+  _id: string;
+  title: string;
+  authorName: string;
+  image: string;
+  price: number;
+  discount: number;
+}
 
 interface Order {
   _id: string;
-  orderId: string;
-  bookTitle: string;
-  bookImage: string;
+  userId: string;
+  bookId: BookDetails;
   quantity: number;
   totalPrice: number;
-  status: "pending" | "delivered" | "cancelled";
-  orderDate: string;
+  status: "pending" | "processing" | "delivered" | "cancelled";
+  paymentStatus: "pending" | "paid" | "failed";
+  paymentIntentId: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 const Orders = () => {
@@ -46,30 +59,42 @@ const Orders = () => {
   const [stats, setStats] = useState({
     total: 0,
     pending: 0,
+    processing: 0,
     delivered: 0,
-    totalSpent: 0,
+    cancelled: 0,
   });
 
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get("/api/user/orders");
+      const { data } = await axios.get(ORDER_API_END_POINT);
       setOrders(data.data || []);
 
-      // Calculate stats
       const total = data.data.length;
       const pending = data.data.filter(
         (o: Order) => o.status === "pending"
       ).length;
+      const processing = data.data.filter(
+        (o: Order) => o.status === "processing"
+      ).length;
       const delivered = data.data.filter(
         (o: Order) => o.status === "delivered"
+      ).length;
+      const cancelled = data.data.filter(
+        (o: Order) => o.status === "cancelled"
       ).length;
       const totalSpent = data.data.reduce(
         (acc: number, o: Order) => acc + o.totalPrice,
         0
       );
 
-      setStats({ total, pending, delivered, totalSpent });
+      setStats({
+        total,
+        pending,
+        processing,
+        delivered,
+        cancelled,
+      });
     } catch (error) {
       toast.error("Failed to fetch orders");
     } finally {
@@ -85,6 +110,8 @@ const Orders = () => {
     switch (status) {
       case "pending":
         return <Clock className="w-4 h-4" />;
+      case "processing":
+        return <TrendingUp className="w-4 h-4" />;
       case "delivered":
         return <CheckCircle className="w-4 h-4" />;
       case "cancelled":
@@ -94,12 +121,16 @@ const Orders = () => {
     }
   };
 
-  const getStatusVariant = (status: string) => {
+  const getStatusVariant = (
+    status: string
+  ): "default" | "secondary" | "destructive" | "outline" => {
     switch (status) {
       case "pending":
         return "secondary";
-      case "delivered":
+      case "processing":
         return "default";
+      case "delivered":
+        return "outline";
       case "cancelled":
         return "destructive";
       default:
@@ -127,7 +158,7 @@ const Orders = () => {
         <p className="text-gray-500 mt-1">Track and manage your orders</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">
@@ -143,12 +174,12 @@ const Orders = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">
-              Pending
+              Processing
             </CardTitle>
             <Clock className="w-4 h-4 text-orange-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.pending}</div>
+            <div className="text-2xl font-bold">{stats.processing}</div>
           </CardContent>
         </Card>
 
@@ -167,11 +198,12 @@ const Orders = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-gray-600">
-              Cancelled
+              cancelled
             </CardTitle>
+            <CheckCircle className="w-4 h-4 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">Rs{stats.totalSpent}</div>
+            <div className="text-2xl font-bold">{stats.cancelled}</div>
           </CardContent>
         </Card>
       </div>
@@ -209,16 +241,18 @@ const Orders = () => {
                 {orders.map((order) => (
                   <TableRow key={order._id}>
                     <TableCell className="font-mono text-sm">
-                      #{order.orderId}
+                      #{order._id.slice(-6)}
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center space-x-3">
                         <img
-                          src={order.bookImage}
-                          alt={order.bookTitle}
+                          src={order.bookId.image}
+                          alt={order.bookId.title}
                           className="w-10 h-12 object-cover rounded"
                         />
-                        <span className="font-medium">{order.bookTitle}</span>
+                        <span className="font-medium">
+                          {order.bookId.title}
+                        </span>
                       </div>
                     </TableCell>
                     <TableCell>{order.quantity}</TableCell>
@@ -234,7 +268,7 @@ const Orders = () => {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      {new Date(order.orderDate).toLocaleDateString("en-IN")}
+                      {new Date(order.createdAt).toLocaleDateString("en-IN")}
                     </TableCell>
                     <TableCell>
                       <Button variant="ghost" size="sm">

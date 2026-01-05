@@ -1,54 +1,54 @@
-import mongoose, { Schema, model, Document, Types } from "mongoose";
-
-export interface IOrderItem {
-  book: Types.ObjectId;
-  quantity: number;
-}
+import mongoose, { Schema, model, Document } from "mongoose";
 
 export interface IOrder extends Document {
-  user: Types.ObjectId;
-  items: IOrderItem[];
-  totalAmount: number;
-  status: "processing" | "delivered" | "cancelled";
+  userId: mongoose.Types.ObjectId;
+  bookId: mongoose.Types.ObjectId;
+  quantity: number;
+  totalPrice: number;
+  status: "pending" | "processing" | "delivered" | "cancelled";
+  paymentStatus: "pending" | "paid" | "failed";
+  paymentIntentId: string;
   createdAt: Date;
+  updatedAt: Date;
 }
 
 const orderSchema = new Schema<IOrder>(
   {
-    user: {
+    userId: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-
-    items: [
-      {
-        book: {
-          type: Schema.Types.ObjectId,
-          ref: "Book",
-          required: true,
-        },
-        quantity: {
-          type: Number,
-          required: true,
-          min: 1,
-        },
-      },
-    ],
-
-    totalAmount: {
+    bookId: {
+      type: Schema.Types.ObjectId,
+      ref: "Book",
+      required: true,
+    },
+    quantity: {
       type: Number,
       required: true,
-      min: 0,
+      min: 1,
     },
-
+    totalPrice: {
+      type: Number,
+      required: true,
+    },
     status: {
       type: String,
-      enum: ["processing", "delivered", "cancelled"],
-      default: "processing",
+      enum: ["pending", "processing", "delivered", "cancelled"],
+      default: "pending",
+    },
+    paymentStatus: {
+      type: String,
+      enum: ["pending", "paid", "failed"],
+      default: "pending",
+    },
+    paymentIntentId: {
+      type: String,
+      required: true,
     },
   },
   { timestamps: true }
 );
 
-export const Order = mongoose.models.Order ||  model<IOrder>("Order", orderSchema);
+export const Order = mongoose.models.Order || model<IOrder>("Order", orderSchema);
