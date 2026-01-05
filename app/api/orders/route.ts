@@ -121,7 +121,7 @@ export async function PUT(req: Request) {
       );
     }
 
-    if (!["pending","processing", "delivered", "cancelled"].includes(status)) {
+    if (!["pending", "processing", "delivered", "cancelled"].includes(status)) {
       return NextResponse.json(
         { success: false, message: "Invalid status" },
         { status: 400 }

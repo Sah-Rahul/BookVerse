@@ -1,4 +1,3 @@
-// ============= ADMIN ORDERS PAGE =============
 "use client";
 
 import { useEffect, useState } from "react";
@@ -120,12 +119,7 @@ const Orders = () => {
     try {
       setUpdatingOrderId(orderId);
 
-      // Remove trailing slash from URL
-      const url = ORDER_API_END_POINT.endsWith("/")
-        ? ORDER_API_END_POINT.slice(0, -1)
-        : ORDER_API_END_POINT;
-
-      const { data } = await axios.put(url, {
+      const { data } = await axios.put(`${ORDER_API_END_POINT}`, {
         orderId,
         status: newStatus,
       });
@@ -186,7 +180,6 @@ const Orders = () => {
         </p>
       </div>
 
-      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -249,7 +242,6 @@ const Orders = () => {
         </Card>
       </div>
 
-      {/* Orders Table */}
       {orders.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-16">
@@ -394,7 +386,6 @@ const Orders = () => {
         </Card>
       )}
 
-      {/* Order Details Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>

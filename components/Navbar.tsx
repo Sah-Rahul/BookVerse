@@ -15,6 +15,7 @@ const Navbar = () => {
     { label: "Contact", link: "/contact" },
   ];
 
+  const user = true;
   return (
     <nav className="bg-linear-to-r from-indigo-900 via-purple-900 to-indigo-900 shadow-2xl sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -58,10 +59,24 @@ const Navbar = () => {
                 </span>
               )}
             </button>
-            <button className="bg-linear-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white px-6 py-3 rounded-xl font-semibold transition shadow-lg flex items-center space-x-2">
-              <User className="w-5 h-5" />
-              <span>Login</span>
-            </button>
+            {user ? (
+              <>
+                {" "}
+               <Link href={'/auth/login'}>
+                <button className="bg-linear-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white px-6 py-3 rounded-xl font-semibold transition shadow-lg flex items-center space-x-2">
+                  <User className="w-5 h-5" />
+                  <span>Login</span>
+                </button>
+               </Link>
+              </>
+            ) : (
+              <>
+                <button className="bg-linear-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white px-6 py-3 rounded-xl font-semibold transition shadow-lg flex items-center space-x-2">
+                  <User className="w-5 h-5" />
+                  <span>Logout</span>
+                </button>
+              </>
+            )}
           </div>
 
           <button
@@ -85,7 +100,7 @@ const Navbar = () => {
                 className={`block text-white hover:text-yellow-400 transition font-medium text-lg ${
                   pathname === item.link ? "text-yellow-400" : ""
                 }`}
-                onClick={() => setIsMenuOpen(false)}  
+                onClick={() => setIsMenuOpen(false)}
               >
                 {item.label}
               </Link>

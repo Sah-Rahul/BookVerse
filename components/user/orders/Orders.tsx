@@ -83,10 +83,7 @@ const Orders = () => {
       const cancelled = data.data.filter(
         (o: Order) => o.status === "cancelled"
       ).length;
-      const totalSpent = data.data.reduce(
-        (acc: number, o: Order) => acc + o.totalPrice,
-        0
-      );
+       
 
       setStats({
         total,
