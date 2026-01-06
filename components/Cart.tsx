@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Plus, Minus, Trash } from "lucide-react";
 import { useCartStore } from "@/store/cart.store";
 import { toast } from "sonner";
+import Link from "next/link";
 
 const CartPage: React.FC = () => {
   const { items, updateQty, removeItem, clearCart } = useCartStore();
@@ -36,7 +37,6 @@ const CartPage: React.FC = () => {
       <h1 className="text-3xl font-bold mb-8">Your Cart</h1>
 
       <div className="grid lg:grid-cols-3 gap-8">
-        {/* Cart Items */}
         <div className="lg:col-span-2 space-y-6">
           {items.map((item) => (
             <div
@@ -88,7 +88,6 @@ const CartPage: React.FC = () => {
           ))}
         </div>
 
-        {/* Order Summary */}
         <div className="bg-white p-6 rounded-xl shadow h-fit">
           <h2 className="text-xl font-bold mb-4">Order Summary</h2>
 
@@ -102,9 +101,11 @@ const CartPage: React.FC = () => {
             <span>Rs {totalAmount}</span>
           </div>
 
-          <button className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold">
-            Checkout
-          </button>
+          <Link href={"/checkout"}>
+            <button className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold">
+              Checkout
+            </button>
+          </Link>
 
           <button
             onClick={handleClearCart}

@@ -10,7 +10,7 @@ export async function GET(req: Request) {
     const orders = await Order.find({ paymentStatus: "paid" });
 
     const totalRevenue = orders.reduce((sum, order) => {
-      return sum + (order.totalPrice || 0);
+      return sum + (order.totalAmount || 0);
     }, 0);
 
     return NextResponse.json(

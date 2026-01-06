@@ -42,27 +42,38 @@ import {
   XCircle,
   Eye,
   TrendingUp,
+  Truck,
 } from "lucide-react";
 import { ORDER_API_END_POINT } from "@/constant/api";
 
-interface BookDetails {
-  _id: string;
+interface OrderItem {
+  bookId: string | { _id: string; title: string; image: string };
   title: string;
-  authorName: string;
-  image: string;
   price: number;
-  discount: number;
+  quantity: number;
+  image: string;
+  _id: string;
+}
+
+interface ShippingAddress {
+  fullName: string;
+  phone: string;
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country: string;
 }
 
 interface Order {
   _id: string;
-  userId: string;
-  bookId: BookDetails;
-  quantity: number;
-  totalPrice: number;
-  status: "pending" | "processing" | "delivered" | "cancelled";
+  userId?: string;
+  items: OrderItem[];
+  shippingAddress: ShippingAddress;
+  totalAmount: number;
+  status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
   paymentStatus: "pending" | "paid" | "failed";
-  paymentIntentId: string;
+  paymentIntentId?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -78,6 +89,7 @@ const Orders = () => {
     total: 0,
     pending: 0,
     processing: 0,
+    shipped: 0,
     delivered: 0,
     cancelled: 0,
   });
@@ -86,6 +98,7 @@ const Orders = () => {
     try {
       setLoading(true);
       const { data } = await axios.get(ORDER_API_END_POINT);
+      console.log("Fetched orders:", data.data);
       setOrders(data.data || []);
 
       const total = data.data.length;
@@ -95,6 +108,9 @@ const Orders = () => {
       const processing = data.data.filter(
         (o: Order) => o.status === "processing"
       ).length;
+      const shipped = data.data.filter(
+        (o: Order) => o.status === "shipped"
+      ).length;
       const delivered = data.data.filter(
         (o: Order) => o.status === "delivered"
       ).length;
@@ -102,7 +118,7 @@ const Orders = () => {
         (o: Order) => o.status === "cancelled"
       ).length;
 
-      setStats({ total, pending, processing, delivered, cancelled });
+      setStats({ total, pending, processing, shipped, delivered, cancelled });
     } catch (error) {
       toast.error("Failed to fetch orders");
       console.error(error);
@@ -144,6 +160,8 @@ const Orders = () => {
         return <Clock className="w-4 h-4" />;
       case "processing":
         return <TrendingUp className="w-4 h-4" />;
+      case "shipped":
+        return <Truck className="w-4 h-4" />;
       case "delivered":
         return <CheckCircle className="w-4 h-4" />;
       case "cancelled":
@@ -268,9 +286,9 @@ const Orders = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Order ID</TableHead>
-                    <TableHead>Book</TableHead>
-                    <TableHead>Quantity</TableHead>
-                    <TableHead>Total Price</TableHead>
+                    <TableHead>Customer</TableHead>
+                    <TableHead>Items</TableHead>
+                    <TableHead>Total</TableHead>
                     <TableHead>Payment</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Date</TableHead>
@@ -281,30 +299,37 @@ const Orders = () => {
                   {orders.map((order) => (
                     <TableRow key={order._id}>
                       <TableCell className="font-mono text-sm">
-                        #{order._id.slice(-6)}
+                        #{order._id.slice(-6).toUpperCase()}
                       </TableCell>
                       <TableCell>
-                        <div className="flex items-center space-x-3">
-                          <img
-                            src={order.bookId.image}
-                            alt={order.bookId.title}
-                            className="w-10 h-12 object-cover rounded"
-                          />
-                          <div>
-                            <p className="font-medium line-clamp-1">
-                              {order.bookId.title}
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              {order.bookId.authorName}
-                            </p>
-                          </div>
+                        <div className="text-sm">
+                          <p className="font-medium">
+                            {order.shippingAddress.fullName}
+                          </p>
+                          <p className="text-gray-500">
+                            {order.shippingAddress.phone}
+                          </p>
                         </div>
                       </TableCell>
-                      <TableCell className="text-center">
-                        {order.quantity}
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <div className="flex -space-x-2">
+                            {order.items.slice(0, 3).map((item, idx) => (
+                              <img
+                                key={idx}
+                                src={item.image}
+                                alt={item.title}
+                                className="w-8 h-10 object-cover rounded border-2 border-white"
+                              />
+                            ))}
+                          </div>
+                          <span className="text-sm text-gray-600">
+                            {order.items.length} item(s)
+                          </span>
+                        </div>
                       </TableCell>
                       <TableCell className="font-semibold">
-                        Rs{order.totalPrice}
+                        Rs {order.totalAmount}
                       </TableCell>
                       <TableCell>
                         <Badge
@@ -316,6 +341,8 @@ const Orders = () => {
                           className={
                             order.paymentStatus === "paid"
                               ? "bg-green-100 text-green-700 hover:bg-green-100"
+                              : order.paymentStatus === "failed"
+                              ? "bg-red-100 text-red-700 hover:bg-red-100"
                               : ""
                           }
                         >
@@ -344,6 +371,12 @@ const Orders = () => {
                               <div className="flex items-center gap-2">
                                 <TrendingUp className="w-4 h-4 text-blue-600" />
                                 <span>Processing</span>
+                              </div>
+                            </SelectItem>
+                            <SelectItem value="shipped">
+                              <div className="flex items-center gap-2">
+                                <Truck className="w-4 h-4 text-purple-600" />
+                                <span>Shipped</span>
                               </div>
                             </SelectItem>
                             <SelectItem value="delivered">
@@ -387,7 +420,7 @@ const Orders = () => {
       )}
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Order Details</DialogTitle>
             <DialogDescription>
@@ -401,7 +434,7 @@ const Orders = () => {
                 <div>
                   <p className="text-sm text-gray-500">Order ID</p>
                   <p className="font-mono font-semibold">
-                    #{selectedOrder._id.slice(-8)}
+                    #{selectedOrder._id.slice(-8).toUpperCase()}
                   </p>
                 </div>
                 <div>
@@ -433,47 +466,75 @@ const Orders = () => {
               </div>
 
               <div className="border rounded-lg p-4">
-                <h3 className="font-semibold mb-3">Book Details</h3>
-                <div className="flex gap-4">
-                  <img
-                    src={selectedOrder.bookId.image}
-                    alt={selectedOrder.bookId.title}
-                    className="w-24 h-32 object-cover rounded"
-                  />
-                  <div className="flex-1">
-                    <p className="font-semibold text-lg">
-                      {selectedOrder.bookId.title}
-                    </p>
-                    <p className="text-gray-600">
-                      By {selectedOrder.bookId.authorName}
-                    </p>
-                    <div className="mt-3 space-y-1">
-                      <p className="text-sm">
-                        <span className="text-gray-500">Price:</span> Rs
-                        {selectedOrder.bookId.price}
-                      </p>
-                      <p className="text-sm">
-                        <span className="text-gray-500">Discount:</span> Rs
-                        {selectedOrder.bookId.discount}
-                      </p>
-                      <p className="text-sm">
-                        <span className="text-gray-500">Quantity:</span>{" "}
-                        {selectedOrder.quantity}
-                      </p>
-                      <p className="text-sm font-semibold">
-                        <span className="text-gray-500">Total:</span> Rs
-                        {selectedOrder.totalPrice}
-                      </p>
+                <h3 className="font-semibold mb-3">Order Items</h3>
+                <div className="space-y-3">
+                  {selectedOrder.items.map((item) => (
+                    <div
+                      key={item._id}
+                      className="flex gap-4 p-3 bg-gray-50 rounded-lg"
+                    >
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        className="w-16 h-20 object-cover rounded"
+                      />
+                      <div className="flex-1">
+                        <p className="font-semibold">{item.title}</p>
+                        <div className="mt-2 text-sm space-y-1">
+                          <p className="text-gray-600">
+                            Price: Rs {item.price}
+                          </p>
+                          <p className="text-gray-600">
+                            Quantity: {item.quantity}
+                          </p>
+                          <p className="font-semibold text-indigo-600">
+                            Subtotal: Rs {item.price * item.quantity}
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="border rounded-lg p-4">
+                <h3 className="font-semibold mb-2">Shipping Address</h3>
+                <div className="text-sm space-y-1">
+                  <p className="font-medium">
+                    {selectedOrder.shippingAddress.fullName}
+                  </p>
+                  <p className="text-gray-600">
+                    {selectedOrder.shippingAddress.phone}
+                  </p>
+                  <p className="text-gray-600">
+                    {selectedOrder.shippingAddress.address}
+                  </p>
+                  <p className="text-gray-600">
+                    {selectedOrder.shippingAddress.city},{" "}
+                    {selectedOrder.shippingAddress.state}{" "}
+                    {selectedOrder.shippingAddress.zipCode}
+                  </p>
+                  <p className="text-gray-600">
+                    {selectedOrder.shippingAddress.country}
+                  </p>
                 </div>
               </div>
 
               <div className="border rounded-lg p-4">
                 <h3 className="font-semibold mb-2">Payment Information</h3>
-                <p className="text-sm text-gray-600 break-all">
-                  Payment Intent ID: {selectedOrder.paymentIntentId}
-                </p>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Total Amount:</span>
+                    <span className="font-semibold">
+                      Rs {selectedOrder.totalAmount}
+                    </span>
+                  </div>
+                  {selectedOrder.paymentIntentId && (
+                    <p className="text-xs text-gray-500 break-all">
+                      Payment Intent: {selectedOrder.paymentIntentId}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           )}
