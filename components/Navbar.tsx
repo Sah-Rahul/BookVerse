@@ -3,10 +3,11 @@ import { useState } from "react";
 import { ShoppingCart, Menu, X, User, BookOpen } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useCartStore } from "@/store/cart.store";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [cartCount] = useState(3);
+
   const pathname = usePathname();
 
   const menuItems = [
@@ -14,6 +15,10 @@ const Navbar = () => {
     { label: "Collections", link: "/collections" },
     { label: "Contact", link: "/contact" },
   ];
+
+  const cartCount = useCartStore((state) =>
+    state.items.reduce((total, item) => total + item.quantity, 0)
+  );
 
   const user = true;
   return (
@@ -51,23 +56,26 @@ const Navbar = () => {
           </div>
 
           <div className="hidden lg:flex items-center space-x-4">
-            <button className="p-3 hover:bg-white/10 rounded-xl transition relative">
-              <ShoppingCart className="w-6 h-6 text-white" />
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-linear-to-r from-orange-500 to-red-500 text-white text-xs w-6 h-6 flex items-center justify-center rounded-full font-bold shadow-lg">
-                  {cartCount}
-                </span>
-              )}
-            </button>
+            <Link href="/cart">
+              <button className="p-3 hover:bg-white/10 rounded-xl relative">
+                <ShoppingCart className="w-6 h-6 text-white" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-6 h-6 flex items-center justify-center rounded-full font-bold">
+                    {cartCount}
+                  </span>
+                )}
+              </button>
+            </Link>
+
             {user ? (
               <>
                 {" "}
-               <Link href={'/auth/login'}>
-                <button className="bg-linear-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white px-6 py-3 rounded-xl font-semibold transition shadow-lg flex items-center space-x-2">
-                  <User className="w-5 h-5" />
-                  <span>Login</span>
-                </button>
-               </Link>
+                <Link href={"/auth/login"}>
+                  <button className="bg-linear-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white px-6 py-3 rounded-xl font-semibold transition shadow-lg flex items-center space-x-2">
+                    <User className="w-5 h-5" />
+                    <span>Login</span>
+                  </button>
+                </Link>
               </>
             ) : (
               <>

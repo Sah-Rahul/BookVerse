@@ -1,15 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { 
-  Filter,
-  ShoppingCart, 
-  Grid3x3,
-  List,
-} from "lucide-react";
+import { Filter, ShoppingCart, Grid3x3, List } from "lucide-react";
 import axios from "axios";
 import { BOOK_API_END_POINT } from "@/constant/books";
 import Link from "next/link";
+import { useCartStore } from "@/store/cart.store";
+import { toast } from "sonner";
 
 export interface IBook {
   _id: string;
@@ -68,6 +65,19 @@ const Collections = () => {
 
     return matchCategory && matchPrice;
   });
+  const addItem = useCartStore((state) => state.addItem);
+
+  const handleAddToCart = (book: IBook) => {
+    addItem({
+      bookId: book._id,
+      title: book.title,
+      price: book.price - book.discount,
+      image: book.image,
+      quantity: 1,
+    });
+
+    toast.success("Item added in your cart");
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -194,6 +204,7 @@ const Collections = () => {
                       </div>
 
                       <button
+                        onClick={() => handleAddToCart(book)}
                         disabled={book.stock === 0}
                         className="mt-4 w-full bg-indigo-600 text-white py-2 rounded-lg flex justify-center gap-2 disabled:opacity-50"
                       >
