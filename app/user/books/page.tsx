@@ -1,7 +1,7 @@
-import Books from '@/components/user/books/Books'
- 
+import Book from "@/components/user/book/Book"
+
 const bookRoute = () => {
-  return  <Books />
+  return  <Book />
 }
 
 export default bookRoute
