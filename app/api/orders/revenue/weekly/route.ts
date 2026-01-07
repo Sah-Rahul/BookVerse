@@ -3,25 +3,30 @@ import { Order } from "@/models/order.model";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  await connectDB();
+  try {
+    await connectDB();
 
-  const revenue = await Order.aggregate([
-    { $match: { paymentStatus: "paid" } },
-    {
-      $group: {
-        _id: { $dayOfWeek: "$createdAt" },
-        orders: { $sum: 1 },
+    const revenue = await Order.aggregate([
+      { $match: { paymentStatus: "paid" } },
+      {
+        $group: {
+          _id: { $dayOfWeek: "$createdAt" },
+          orders: { $sum: 1 },
+        },
       },
-    },
-    { $sort: { _id: 1 } },
-  ]);
+      { $sort: { _id: 1 } },
+    ]);
 
-  const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+    const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
-  const data = revenue.map(r => ({
-    name: days[r._id - 1],
-    orders: r.orders,
-  }));
+    const data = revenue.map(r => ({
+      name: days[r._id - 1],
+      orders: r.orders,
+    }));
 
-  return NextResponse.json({ success: true, data });
+    return NextResponse.json({ success: true, data });
+  } catch (error: any) {
+    console.error("Weekly orders error:", error);
+    return NextResponse.json({ success: false, data: [] });
+  }
 }

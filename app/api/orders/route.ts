@@ -1,5 +1,7 @@
 import { connectDB } from "@/lib/db";
+import { Book } from "@/models/book.model";
 import { Order } from "@/models/order.model";
+import { User } from "@/models/user.model";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
@@ -9,10 +11,7 @@ export async function GET(req: Request) {
   try {
     await connectDB();
 
-    const orders = await Order.find()
-      .populate("items.bookId")  
-      .populate("userId")
-      .sort({ createdAt: -1 });
+    const orders = await Order.find().sort({ createdAt: -1 });
 
     return NextResponse.json({ success: true, data: orders }, { status: 200 });
   } catch (error) {
@@ -47,7 +46,6 @@ export async function POST(req: Request) {
 
     console.log("Order created:", order._id);
 
-   
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: items.map((item: any) => ({
@@ -69,7 +67,6 @@ export async function POST(req: Request) {
       },
     });
 
-  
     order.paymentIntentId = session.id;
     await order.save();
 
@@ -102,7 +99,13 @@ export async function PUT(req: Request) {
       );
     }
 
-    const validStatuses = ["pending", "processing", "shipped", "delivered", "cancelled"];
+    const validStatuses = [
+      "pending",
+      "processing",
+      "shipped",
+      "delivered",
+      "cancelled",
+    ];
     if (!validStatuses.includes(status)) {
       return NextResponse.json(
         { success: false, message: "Invalid status" },
@@ -114,7 +117,7 @@ export async function PUT(req: Request) {
       orderId,
       { status },
       { new: true }
-    ).populate("items.bookId");
+    );
 
     if (!updatedOrder) {
       return NextResponse.json(
@@ -123,14 +126,16 @@ export async function PUT(req: Request) {
       );
     }
 
+    console.log("Order updated successfully:", updatedOrder._id);
+
     return NextResponse.json(
       { success: true, data: updatedOrder },
       { status: 200 }
     );
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    console.error("PUT Error:", error);
     return NextResponse.json(
-      { success: false, message: "Could not update order" },
+      { success: false, message: error.message },
       { status: 500 }
     );
   }
