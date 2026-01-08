@@ -257,8 +257,13 @@ const Collections = () => {
                         )}
                       </div>
 
-                      <button className="mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg flex gap-2">
-                        <ShoppingCart size={18} /> Add to Cart
+                      <button
+                        onClick={() => handleAddToCart(book)}
+                        disabled={book.stock === 0}
+                        className="mt-4 bg-indigo-600 text-white px-6 py-2 rounded-lg flex gap-2"
+                      >
+                        <ShoppingCart size={18} />
+                        {book.stock === 0 ? "Out of Stock" : "Add to Cart"}
                       </button>
                     </div>
                   </div>
