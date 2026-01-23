@@ -1,6 +1,7 @@
 "use client";
 
 import { LOGIN_API_END_POINT } from "@/constant/api";
+import { useUserStore } from "@/store/user.store";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -15,6 +16,8 @@ const Login: React.FC = () => {
     password: "",
   });
 
+  const { setUser } = useUserStore();
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -26,6 +29,11 @@ const Login: React.FC = () => {
       setLoading(true);
       const { data } = await axios.post(`${LOGIN_API_END_POINT}`, formData);
       toast.success(`${data.message}`);
+      setUser(data.user);
+      if (data.user?.role === "admin") {
+        router.push("/admin/books");
+        return;  
+      }
       router.push("/");
     } catch (error) {
       console.log(error);

@@ -16,6 +16,7 @@ const Register: React.FC = () => {
     password: "",
   });
 
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -27,6 +28,7 @@ const Register: React.FC = () => {
       setLoading(true);
       await axios.post(REGISTER_API_END_POINT, formData);
       toast.success("Register Successful");
+      
       router.push("/auth/login");  
     } catch (error) {
       console.error(error);

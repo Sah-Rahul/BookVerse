@@ -65,6 +65,7 @@ const Books = () => {
     stock: 0,
     file: null as File | null,
     category: "",
+    description: "",
   });
 
   //  FETCH BOOKS
@@ -103,6 +104,8 @@ const Books = () => {
       data.append("discount", formData.discount.toString());
       data.append("stock", formData.stock.toString());
       data.append("category", formData.category);
+      data.append("description", formData.description);
+
       if (formData.file) data.append("image", formData.file);
 
       await axios.post(BOOK_API_END_POINT, data);
@@ -118,6 +121,7 @@ const Books = () => {
         stock: 0,
         file: null,
         category: "",
+        description: "",
       });
 
       fetchAllBooks();
@@ -139,7 +143,7 @@ const Books = () => {
 
   const paginatedBooks = filteredBooks.slice(
     (page - 1) * ITEMS_PER_PAGE,
-    page * ITEMS_PER_PAGE
+    page * ITEMS_PER_PAGE,
   );
 
   return (
@@ -174,6 +178,18 @@ const Books = () => {
               />
 
               <label htmlFor="price" className="block font-medium mb-1">
+                Description
+              </label>
+              <Input
+                type="text"
+                placeholder="description"
+                value={formData.description}
+                onChange={(e) =>
+                  handleInputChange("description", e.target.value)
+                }
+              />
+
+              <label htmlFor="price" className="block font-medium mb-1">
                 Price
               </label>
               <Input
@@ -182,6 +198,7 @@ const Books = () => {
                 value={formData.price}
                 onChange={(e) => handleInputChange("price", e.target.value)}
               />
+
               <label htmlFor="discount" className="block font-medium mb-1">
                 Discount
               </label>
