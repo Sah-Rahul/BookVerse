@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📚 BookStream - MERN Stack Book Store with Stripe
 
-## Getting Started
+BookStream ek powerful E-commerce application hai jo MERN stack (MongoDB, Express, React, Node.js) aur Next.js par bani hai. Isme users books browse kar sakte hain, Stripe se secure payment kar sakte hain aur Admin pura store control kar sakta hai.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🌟 Key Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 👤 User Features
+* **Authentication**: JWT based Secure Login aur Logout.
+* **Smart Filters**: Books ko Author Name, Price aur Category ke basis par filter karne ki suvidha.
+* **Shopping Cart**: Books ko cart mein add karein, quantity manage karein aur total price calculate karein.
+* **Secure Checkout**: Stripe Payment Gateway integration for fast and secure transactions. 💳
+* **User Dashboard**: 
+    * Profile management.
+    * **My Orders**: Apne orders ki history aur live status (Pending, Processing, Shipped, Delivered) track karein.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 🛡️ Admin Features (Advanced Dashboard)
+* **Inventory Management**: Nayi books add karein (Title, Author, Price, Discount, Stock, Category aur Image upload).
+* **Order Management**: Sabhi users ke orders ko monitor karein aur unka delivery status update karein.
+* **Sales Analytics**: Dashboard par total sales aur active orders ka overview.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🛠️ Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+**Frontend:**
+- **Next.js / React.js** (App Router)
+- **Tailwind CSS** & **Shadcn UI** (Modern Styling)
+- **Axios** (API Requests)
+- **Sonner** (Toast Notifications)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Backend:**
+- **Node.js** & **Express.js**
+- **MongoDB** (Database)
+- **Stripe API** (Payments)
+- **Cloudinary** (Image Hosting)
+- **JWT** (Security)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 📦 Project Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```text
+├── frontend/
+│   ├── app/           # Pages & Routes
+│   ├── components/    # UI & Shared Components
+│   └── lib/           # Stripe & Helper Functions
+├── backend/
+│   ├── models/        # Database Schemas (User, Book, Order)
+│   ├── routes/        # API Endpoints
+│   ├── controllers/   # Business Logic
+│   └── utils/         # Auth & Stripe Config
