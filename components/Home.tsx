@@ -20,6 +20,7 @@ export interface IBook {
   price: number;
   discount: number;
   image: string;
+  slug: string;
   category: string;
   stock: number;
   description?: string;
@@ -139,7 +140,7 @@ const Home = () => {
               </p>
             </div>
             <Link href={"/collections"}>
-              <button className="mt-6 md:mt-0 bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition transform hover:scale-105">
+              <button className="mt-6 cursor-pointer md:mt-0 bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition transform hover:scale-105">
                 View All Books →
               </button>
             </Link>
@@ -159,7 +160,7 @@ const Home = () => {
                 const finalPrice = getFinalPrice(book.price, book.discount);
                 const discountPercentage = getDiscountPercentage(
                   book.price,
-                  book.discount
+                  book.discount,
                 );
 
                 return (
@@ -168,7 +169,7 @@ const Home = () => {
                     className="group bg-linear-to-br from-white to-gray-50 rounded-3xl shadow-lg hover:shadow-2xl transition overflow-hidden transform hover:-translate-y-2 duration-300 border border-gray-100"
                   >
                     <div className="relative overflow-hidden">
-                      <Link href={`/book/details/${book._id}`}>
+                      <Link href={`/book/details/${book.slug}`}>
                         <img
                           src={book.image}
                           alt={book.title}

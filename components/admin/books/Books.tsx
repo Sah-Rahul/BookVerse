@@ -33,6 +33,7 @@ import {
 
 import { BOOK_API_END_POINT } from "@/constant/books";
 import Loading from "@/components/Loading";
+import Link from "next/link";
 
 export const BOOK_CATEGORIES = [
   "Philosophy",
@@ -61,7 +62,6 @@ const Books = () => {
     title: "",
     bookAuthor: "",
     price: 0,
-    discount: 0,
     stock: 0,
     file: null as File | null,
     category: "",
@@ -101,7 +101,6 @@ const Books = () => {
       data.append("title", formData.title);
       data.append("authorName", formData.bookAuthor);
       data.append("price", formData.price.toString());
-      data.append("discount", formData.discount.toString());
       data.append("stock", formData.stock.toString());
       data.append("category", formData.category);
       data.append("description", formData.description);
@@ -117,7 +116,6 @@ const Books = () => {
         title: "",
         bookAuthor: "",
         price: 0,
-        discount: 0,
         stock: 0,
         file: null,
         category: "",
@@ -199,15 +197,6 @@ const Books = () => {
                 onChange={(e) => handleInputChange("price", e.target.value)}
               />
 
-              <label htmlFor="discount" className="block font-medium mb-1">
-                Discount
-              </label>
-              <Input
-                type="number"
-                placeholder="Discount"
-                value={formData.discount}
-                onChange={(e) => handleInputChange("discount", e.target.value)}
-              />
               <label htmlFor="stock" className="block font-medium mb-1">
                 Stock
               </label>
@@ -273,7 +262,6 @@ const Books = () => {
                   <TableHead>Title</TableHead>
                   <TableHead>Author</TableHead>
                   <TableHead>Price</TableHead>
-                  <TableHead>Discount</TableHead>
                   <TableHead>Total Price</TableHead>
                   <TableHead>Stock</TableHead>
                   <TableHead>Category</TableHead>
@@ -300,11 +288,12 @@ const Books = () => {
                           />
                         </TableCell>
                         <TableCell className="font-medium">
-                          {book.title}
+                          <Link href={`/book/details/${book.slug}`}>
+                            {book.title}
+                          </Link>
                         </TableCell>
                         <TableCell>{book.authorName}</TableCell>
                         <TableCell>Rs{book.price}</TableCell>
-                        <TableCell>Rs{book.discount}</TableCell>
                         <TableCell className="font-semibold text-green-600">
                           Rs{finalPrice}
                         </TableCell>

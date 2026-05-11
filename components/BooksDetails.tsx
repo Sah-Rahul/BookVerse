@@ -19,15 +19,13 @@ interface Book {
 }
 
 const BookDetails = () => {
-  const { id } = useParams();  
+  const { id } = useParams();
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchBook = async () => {
     try {
-      const { data } = await axios.get(
-        `${BOOK_API_END_POINT}/${id}`
-      );
+      const { data } = await axios.get(`${BOOK_API_END_POINT}/${id}`);
       setBook(data.data);
     } catch (error) {
       console.log(error);
@@ -61,23 +59,19 @@ const BookDetails = () => {
 
         <div>
           <h1 className="text-4xl font-bold mb-2">{book.title}</h1>
-          <p className="text-lg text-gray-600 mb-4">
-            by {book.authorName}
-          </p>
+          <p className="text-lg text-gray-600 mb-4">by {book.authorName}</p>
 
-          <p className="text-gray-500 mb-4">
-            Category: {book.category}
-          </p>
+          <p className="text-gray-500 mb-4">Category: {book.category}</p>
 
           <div className="flex items-center gap-3 mb-6">
             <span className="text-3xl font-bold text-indigo-600">
               Rs{finalPrice}
             </span>
-            {book.discount > 0 && (
+            {/* {book.discount > 0 && (
               <span className="line-through text-gray-400">
                 Rs{book.price}
               </span>
-            )}
+            )} */}
           </div>
 
           <p className="text-gray-700 mb-6">
@@ -86,7 +80,7 @@ const BookDetails = () => {
 
           <button
             disabled={book.stock === 0}
-            className="bg-indigo-600 text-white px-8 py-3 rounded-lg disabled:opacity-50"
+            className="bg-indigo-600 cursor-pointer text-white px-8 py-3 rounded-lg disabled:opacity-50"
           >
             {book.stock === 0 ? "Out of Stock" : "Add to Cart"}
           </button>

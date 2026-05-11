@@ -1,3 +1,4 @@
+import slugify from "slugify";
 import mongoose, { Schema, model, Document } from "mongoose";
 
 export enum BookCategory {
@@ -16,6 +17,7 @@ export interface IBook extends Document {
   price: number;
   discount: number;
   image: string;
+  slug: string;
   stock: number;
   authorName: string;
   category: BookCategory;
@@ -36,36 +38,60 @@ const bookSchema = new Schema<IBook>(
       required: [true, "Price is required"],
       min: 0,
     },
+
     discount: {
       type: Number,
       default: 0,
     },
+
     image: {
       type: String,
       required: [true, "Image is required"],
     },
+
     authorName: {
       type: String,
       required: [true, "Author name is required"],
       trim: true,
     },
+
     stock: {
       type: Number,
       required: true,
       min: 0,
       default: 0,
     },
+
     category: {
       type: String,
       enum: Object.values(BookCategory),
       required: [true, "Category is required"],
     },
+
     description: {
       type: String,
       trim: true,
     },
+
+    slug: {
+      type: String,
+      unique: true,
+      index: true,
+      lowercase: true,
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
+
+bookSchema.pre("validate", function (next) {
+  if (this.isModified("title")) {
+    this.slug = slugify(this.title, {
+      lower: true,
+      strict: true,
+    });
+  }
+});
+
+bookSchema.index({ slug: 1 });
 
 export const Book = mongoose.models.Book || model<IBook>("Book", bookSchema);

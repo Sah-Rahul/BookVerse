@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import { Book } from "@/models/book.model";
-
 import { v2 as cloudinary } from "cloudinary";
 
 cloudinary.config({
@@ -10,12 +9,13 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+// CREATE BOOK
 export async function POST(req: Request) {
   try {
     await connectDB();
 
     const formData = await req.formData();
- 
+
     const title = formData.get("title");
     const priceRaw = formData.get("price");
     const discountRaw = formData.get("discount");
@@ -25,6 +25,7 @@ export async function POST(req: Request) {
     const description = formData.get("description");
     const imageFile = formData.get("image");
 
+    // validation
     if (
       typeof title !== "string" ||
       typeof authorName !== "string" ||
@@ -35,7 +36,7 @@ export async function POST(req: Request) {
     ) {
       return NextResponse.json(
         { success: false, message: "Missing or invalid required fields" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -46,50 +47,41 @@ export async function POST(req: Request) {
     if (isNaN(price) || price < 0) {
       return NextResponse.json(
         { success: false, message: "Invalid price" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    if (isNaN(discount) || discount < 0) {
+    if (isNaN(discount) || discount < 0 || discount > 100) {
       return NextResponse.json(
-        { success: false, message: "Invalid discount" },
-        { status: 400 }
-      );
-    }
-
-    if (discount > price) {
-      return NextResponse.json(
-        { success: false, message: "Discount cannot be greater than price" },
-        { status: 400 }
+        { success: false, message: "Invalid discount (0-100 allowed)" },
+        { status: 400 },
       );
     }
 
     if (isNaN(stock) || stock < 0) {
       return NextResponse.json(
         { success: false, message: "Invalid stock value" },
-        { status: 400 }
+        { status: 400 },
       );
     }
- 
+
     const bytes = await imageFile.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    const uploadResponse = await new Promise<{ secure_url: string }>(
-      (resolve, reject) => {
-        cloudinary.uploader
-          .upload_stream({ folder: "books" }, (error, result) => {
-            if (error) reject(error);
-            else resolve(result as { secure_url: string });
-          })
-          .end(buffer);
-      }
-    );
+    const uploadResponse = await new Promise<any>((resolve, reject) => {
+      cloudinary.uploader
+        .upload_stream({ folder: "books" }, (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        })
+        .end(buffer);
+    });
 
     const imageUrl = uploadResponse.secure_url;
- 
-    const finalPrice = price - discount;
- 
-    const bookData = {
+
+    const finalPrice = price - (price * discount) / 100;
+
+    const book = await Book.create({
       title,
       price,
       discount,
@@ -99,31 +91,29 @@ export async function POST(req: Request) {
       category,
       description: typeof description === "string" ? description : "",
       image: imageUrl,
-    };
- 
-    const book = await Book.create(bookData);
+    });
 
     return NextResponse.json({ success: true, data: book }, { status: 201 });
   } catch (error) {
-    console.error("Error creating book:", error);
+    console.error(error);
     return NextResponse.json(
       { success: false, message: "Book not created" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
-export async function GET(req: Request) {
+export async function GET() {
   try {
     await connectDB();
 
-    const book = await Book.find();
+    const books = await Book.find();
 
-    return NextResponse.json({ success: true, data: book }, { status: 201 });
+    return NextResponse.json({ success: true, data: books }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
-      { success: false, message: "Book not created" },
-      { status: 500 }
+      { success: false, message: "Failed to fetch books" },
+      { status: 500 },
     );
   }
 }

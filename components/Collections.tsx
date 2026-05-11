@@ -14,6 +14,7 @@ export interface IBook {
   authorName: string;
   price: number;
   discount: number;
+  slug: string;
   image: string;
   category: string;
   stock: number;
@@ -165,7 +166,7 @@ const Collections = () => {
                 const finalPrice = getFinalPrice(book.price, book.discount);
                 const discountPercent = getDiscountPercentage(
                   book.price,
-                  book.discount
+                  book.discount,
                 );
 
                 return (
@@ -173,7 +174,7 @@ const Collections = () => {
                     key={book._id}
                     className="bg-white rounded-xl shadow hover:shadow-lg transition"
                   >
-                    <Link href={`/book/details/${book._id}`}>
+                    <Link href={`/book/details/${book.slug}`}>
                       <img
                         src={book.image}
                         className="h-72 w-full object-cover rounded-t-xl"
@@ -181,7 +182,9 @@ const Collections = () => {
                     </Link>
 
                     <div className="p-4">
-                      <h3 className="font-bold text-lg">{book.title}</h3>
+                      <Link href={`/book/details/${book.slug}`}>
+                        <h3 className="hover:text-blue-600 font-bold text-lg">{book.title}</h3>
+                      </Link>
                       <p className="text-gray-600">{book.authorName}</p>
 
                       <div className="flex items-center gap-4">
@@ -189,18 +192,18 @@ const Collections = () => {
                           <span className="text-xl font-bold text-indigo-600">
                             Rs{finalPrice}
                           </span>
-                          {book.discount > 0 && (
+                          {/* {book.discount > 0 && (
                             <span className="line-through text-gray-400">
                               Rs{book.price}
                             </span>
-                          )}
+                          )} */}
                         </div>
 
-                        {discountPercent > 0 && (
+                        {/* {discountPercent > 0 && (
                           <span className="text-green-600 text-sm">
                             {discountPercent}% OFF
                           </span>
-                        )}
+                        )} */}
                       </div>
 
                       <button
@@ -224,7 +227,7 @@ const Collections = () => {
                 const finalPrice = getFinalPrice(book.price, book.discount);
                 const discountPercent = getDiscountPercentage(
                   book.price,
-                  book.discount
+                  book.discount,
                 );
 
                 return (

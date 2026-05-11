@@ -3,19 +3,19 @@ import { connectDB } from "@/lib/db";
 import { Book } from "@/models/book.model";
 
 interface Params {
-  params: { id: string };
+  params: { slug: string };
 }
 
 export async function GET(req: Request, { params }: Params) {
   try {
     await connectDB();
 
-    const book = await Book.findById(params.id);
+    const book = await Book.findOne({ slug: params.slug });
 
     if (!book) {
       return NextResponse.json(
         { success: false, message: "Book not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -23,7 +23,7 @@ export async function GET(req: Request, { params }: Params) {
   } catch {
     return NextResponse.json(
       { success: false, message: "Failed to fetch book" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -31,24 +31,25 @@ export async function GET(req: Request, { params }: Params) {
 export async function PUT(req: Request, { params }: Params) {
   try {
     await connectDB();
+
     const body = await req.json();
 
-    const book = await Book.findByIdAndUpdate(params.id, body, {
+    const book = await Book.findOneAndUpdate({ slug: params.slug }, body, {
       new: true,
     });
 
     if (!book) {
       return NextResponse.json(
         { success: false, message: "Book not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
-    return NextResponse.json({ success: true, data: book });
+    return NextResponse.json({ success: true, data: book }, { status: 200 });
   } catch {
     return NextResponse.json(
       { success: false, message: "Book not updated" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -57,23 +58,23 @@ export async function DELETE(req: Request, { params }: Params) {
   try {
     await connectDB();
 
-    const book = await Book.findByIdAndDelete(params.id);
+    const book = await Book.findOneAndDelete({ slug: params.slug });
 
     if (!book) {
       return NextResponse.json(
         { success: false, message: "Book not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
     return NextResponse.json(
       { success: true, message: "Book deleted" },
-      { status: 200 }
+      { status: 200 },
     );
   } catch {
     return NextResponse.json(
       { success: false, message: "Book not deleted" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

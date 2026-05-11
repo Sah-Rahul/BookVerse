@@ -5,7 +5,7 @@ export interface userI {
   _id: string;
   name: string;
   email: string;
-  role?: string; // optional
+  role?: string; 
 }
 
 interface UserStore {
